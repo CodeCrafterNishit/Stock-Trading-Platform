@@ -1,0 +1,119 @@
+.logo-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 40px 50px;
+}
+
+.logo-box {
+  height: 130px;
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-box img {
+  max-width: 180px;
+  max-height: 90px;
+  width: 100%;
+  object-fit: contain;
+}
+
+.logo-card {
+  padding: 15px 20px 25px;
+}
+
+.logo-card p {
+  margin-top: 15px;
+  line-height: 1.7;
+}
+#supportHero {
+  background-color: rgb(56, 126, 209);
+  color: white;
+}
+
+#supportHero a {
+  color: white;
+  text-decoration: none;
+}
+
+.support-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 35px 45px 60px;
+}
+
+#supportWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 45px;
+}
+
+#supportWrapper h4 {
+  margin: 0;
+}
+
+.support-main {
+  padding: 25px 0;
+}
+
+#supportHero input {
+  padding: 18px 25px;
+  width: 100%;
+  font-size: 18px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+}
+
+.support-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 25px;
+}
+
+.support-links a {
+  font-size: 15px;
+}
+
+.featured-list {
+  padding-left: 20px;
+  line-height: 2;
+}
+
+.featured-list a {
+  font-size: 15px;
+}
+
+/* Ticket section */
+
+.support-ticket-section {
+  padding: 70px 45px;
+}
+
+.support-ticket-card {
+  padding: 30px 35px;
+  margin-bottom: 35px;
+}
+
+.support-ticket-card h4 {
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.support-ticket-card h4 i {
+  margin-right: 5px;
+}
+
+.support-ticket-card a {
+  display: block;
+  text-decoration: none;
+  line-height: 2.3;
+  color: #387ed1;
+  font-size: 15px;
+}
+
+.support-ticket-card a:hover {
+  text-decoration: underline;
+}
