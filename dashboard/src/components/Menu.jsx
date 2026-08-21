@@ -1,10 +1,10 @@
-
+import logo from "../../public/logo.png"
 const Menu = () => {
   const handleProfileClick = () => {};
 
   return (
     <div className="menu-container">
-      <img src="logo.png" style={{ width: "50px" }} />
+      <img src={logo} style={{ width: "50px" }} />
       <div className="menus">
         <ul>
           <li>
