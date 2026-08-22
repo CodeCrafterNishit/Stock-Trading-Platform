@@ -687,9 +687,15 @@ hr {
   position: relative;
 }
 
+.item-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
 .item-info {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-around;
   align-items: center;
 }
 
