@@ -1,7 +1,15 @@
 import { watchlist } from "../data/data";
 import { useState } from "react";
 import { Tooltip, Grow } from "@mui/material";
-import { BarChartOutlined, KeyboardArrowDown, KeyboardArrowUp, MoreHoriz } from "@mui/icons-material";
+import axios from "axios";
+import {
+  BarChartOutlined,
+  KeyboardArrowDown,
+  KeyboardArrowUp,
+  MoreHoriz,
+} from "@mui/icons-material";
+import { useContext } from "react";
+import GeneralContext from "../context/GeneralContext";
 const WatchList = () => {
   return (
     <div className="watchlist-container">
@@ -52,55 +60,68 @@ const WatchListItem = ({ stock }) => {
           <span className="price">{stock.price}</span>
         </div>
       </div>
-    {showWatchListActions && <WatchListActions uid={stock.name}/>}
-
+      {showWatchListActions && <WatchListActions uid={stock.name} price={stock.price}/>}
     </li>
   );
 };
 
-const WatchListActions = ({uid})=>{
-  return(
+const WatchListActions = ({ uid,price }) => {
+  const generalContext = useContext(GeneralContext);
+
+  const handleBuyClick = () => {
+    generalContext.openBuyWindow(uid);
+  };
+
+   const handleSellClick = () => {
+    axios.post("http://localhost:3002/newOrder", {
+      name: uid,
+      qty: 1,
+      price: price,
+      mode: "SELL",
+    });
+  };
+  return (
     <span className="actions">
       <span>
-        <Tooltip 
-        title="Buy (B)" 
-        placement="top" 
-        arrow 
-        TransitionComponent = {Grow}
+        <Tooltip
+          title="Buy (B)"
+          placement="top"
+          arrow
+          TransitionComponent={Grow}
         >
-          <button className="buy">Buy</button>
+          <button className="buy" onClick={handleBuyClick}>
+            Buy
+          </button>
         </Tooltip>
-         <Tooltip 
-        title="Sell (S)" 
-        placement="top" 
-        arrow 
-        TransitionComponent = {Grow}
+        <Tooltip
+          title="Sell (S)"
+          placement="top"
+          arrow
+          TransitionComponent={Grow}
         >
-          <button className="sell">Sell</button>
+          <button className="sell" onClick={handleSellClick}>Sell</button>
         </Tooltip>
-         <Tooltip 
-        title="Analytics (A)" 
-        placement="top" 
-        arrow 
-        TransitionComponent = {Grow}
+        <Tooltip
+          title="Analytics (A)"
+          placement="top"
+          arrow
+          TransitionComponent={Grow}
         >
           <button className="action">
-            <BarChartOutlined className="icon"/>
+            <BarChartOutlined className="icon" />
           </button>
-          
         </Tooltip>
-         <Tooltip 
-        title="More (M)" 
-        placement="top" 
-        arrow 
-        TransitionComponent = {Grow}
+        <Tooltip
+          title="More (M)"
+          placement="top"
+          arrow
+          TransitionComponent={Grow}
         >
           <button className="action">
-            <MoreHoriz className="icon"/>
+            <MoreHoriz className="icon" />
           </button>
-          
         </Tooltip>
       </span>
-    </span> 
+    </span>
   );
-}
+};
