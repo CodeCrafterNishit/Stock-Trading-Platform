@@ -1,4 +1,5 @@
 import homeHero from "../../../images/homeHero.png";
+import {Link} from "react-router-dom"
 function Hero() {
     return ( 
         <>
@@ -7,7 +8,7 @@ function Hero() {
                 <img src={homeHero} alt="" style={{width:"100%",maxWidth:"868px"}} className="img-fluid mb-4"/>
                 <h1 className="mt-3">Invest in everything</h1>
                 <p className="lead mb-3">Online platform to invest in stocks,derivatives,mutual funds and more</p>
-                <button className="btn btn-primary btn-sm mt-3  mx-auto d-block w-25 py-2 fs-5" style={{maxWidth:"205px",width:"100%"}}>Signup Now</button>
+                <Link to="/signup" className="btn btn-primary btn-sm mt-3  mx-auto d-block w-25 py-2 fs-5" style={{maxWidth:"205px",width:"100%"}}>Signup Now</Link>
             </div>
         </div>
         </>

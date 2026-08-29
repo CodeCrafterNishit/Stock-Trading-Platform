@@ -1,4 +1,5 @@
 import HeroPage from "./landing_page/home/HeroPage";
+import Login from "./landing_page/login/Login";
 import Signup from "./landing_page/signup/Signup";
 import About from "./landing_page/about/AboutPage";
 import Pricing from "./landing_page/pricing/PricingPage";
@@ -14,6 +15,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<HeroPage />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/about" element={<About />} />
         <Route path="/pricing" element={<Pricing />} />

@@ -1,14 +1,27 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import "../index.css";
+
 const Menu = () => {
   const [selectOptions, setSelectOptions] = useState(0);
   const [profileCheck, setProfileCheck] = useState(false);
+  const navigate = useNavigate();
+
+  const username = localStorage.getItem("username") || "User";
+
   const handleSelectOptions = (index) => {
     setSelectOptions(index);
   };
   const handleProfileClick = () => {
     setProfileCheck(!profileCheck);
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    window.location.href = "http://localhost:5175";
+  };
+
   const menuClass = "menu";
   const activeMenuClass = "menu selected";
 
@@ -85,9 +98,20 @@ const Menu = () => {
           </li>
         </ul>
         <hr />
-        <div className="profile" onClick={handleProfileClick}>
-          <div className="avatar">ZU</div>
-          <p className="username">USERID</p>
+        <div className="profile-container" style={{ position: "relative" }}>
+          <div className="profile" onClick={handleProfileClick}>
+            <div className="avatar">{username.slice(0, 2).toUpperCase()}</div>
+            <p className="username">{username}</p>
+          </div>
+
+          {profileCheck && (
+            <div className="profile-dropdown">
+              <p className="dropdown-username">Hii, {username}</p>
+              <p className="dropdown-logout" onClick={handleLogout}>
+                Logout
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -1,7 +1,6 @@
 import { watchlist } from "../data/data";
 import { useState } from "react";
 import { Tooltip, Grow } from "@mui/material";
-import axios from "axios";
 import {
   BarChartOutlined,
   KeyboardArrowDown,
@@ -10,6 +9,7 @@ import {
 } from "@mui/icons-material";
 import { useContext } from "react";
 import GeneralContext from "../context/GeneralContext";
+import api from "../api/axios";
 const WatchList = () => {
   return (
     <div className="watchlist-container">
@@ -73,7 +73,7 @@ const WatchListActions = ({ uid,price }) => {
   };
 
    const handleSellClick = () => {
-    axios.post("http://localhost:3002/newOrder", {
+    api.post("http://localhost:3002/newOrder", {
       name: uid,
       qty: 1,
       price: price,

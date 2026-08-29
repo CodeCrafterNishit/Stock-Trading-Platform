@@ -33,6 +33,11 @@ function Navbar() {
           >
             <ul className="navbar-nav align-items-center">
               <li className="nav-item">
+                <Link className="nav-link px-3" to="/login">
+                  Login
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link className="nav-link px-3" to="/signup">
                   Signup
                 </Link>

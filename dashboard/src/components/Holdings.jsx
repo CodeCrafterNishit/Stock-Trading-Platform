@@ -1,11 +1,11 @@
 // import { holdings } from "../data/data";
 import {useState,useEffect} from "react";
-import axios from "axios"; 
+import api from "../api/axios"; 
 const Holdings = () => {
 
   const [allHoldings,setAllHoldings] = useState([]);
   useEffect(()=>{
-    axios.get("http://localhost:3002/allHoldings").then((res)=>{
+    api.get("http://localhost:3002/allHoldings").then((res)=>{
       setAllHoldings(res.data);
     })
   },[]); 

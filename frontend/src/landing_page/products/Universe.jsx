@@ -4,6 +4,7 @@ import dittoLogo from "../../../images/dittoLogo.png";
 import sensibullLogo from "../../../images/sensibullLogo.svg";
 import goldenpiLogo from "../../../images/goldenpiLogo.png";
 import InvestoFundHouse from "../../../images/InvestoFundHouse.png";
+import {Link} from "react-router-dom"
 
 import "../../../src/style.css";
 
@@ -81,12 +82,12 @@ function Universe() {
               </p>
             </div>
           </div>
-          <button
+          <Link to="/signup"
             className="btn btn-primary btn-sm mt-3 mb-3  mx-auto d-block w-25 py-2 fs-5"
             style={{ maxWidth: "205px", width: "100%" }}
           >
             Sign Up for free
-          </button>
+          </Link>
         </div>
       </div>
     </>
