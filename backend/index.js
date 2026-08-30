@@ -14,7 +14,9 @@ const { HoldingsModel } = require("./model/HoldingsModel");
 const { PositionsModel } = require("./model/PositionsModel");
 const { OrdersModel } = require("./model/OrdersModel");
 const { UserModel } = require("./model/UserModel");
+const {StockModel} = require("./model/StockModel");
 const authMiddleware = require("./middleware/authMiddleware");
+const startPriceSimulator = require("../backend/services/PriceSimulator");
 
 app.use(bodyParser.json()); // parses incoming JSON body -> req.body
 app.use(cors());
@@ -66,9 +68,34 @@ app.post("/login", async (req, res) => {
   }
 });
 
+app.get("/allStocks", async (req, res) => {
+  const stocks = await StockModel.find();
+
+  const enriched = stocks.map((s) => {
+    const percentChange = ((s.price - s.previousPrice) / s.previousPrice) * 100;
+    return {
+      name: s.name,
+      price: s.price,
+      percent: `${percentChange.toFixed(2)}%`,
+      isDown: percentChange < 0,
+    };
+  });
+
+  res.json(enriched);
+});
+
 app.get("/allHoldings", authMiddleware, async (req, res) => {
-  let allholdings = await HoldingsModel.find({ user: req.userId });
-  res.json(allholdings);
+  const holdings = await HoldingsModel.find({ user: req.userId });
+  const stocks = await StockModel.find();
+
+  const priceMap = Object.fromEntries(stocks.map((s) => [s.name, s.price]));
+
+  const enrichedHoldings = holdings.map((h) => ({
+    ...h.toObject(),
+    price: priceMap[h.name] ?? h.price, // live price if found, else fallback to original
+  }));
+
+  res.json(enrichedHoldings);
 });
 
 app.get("/allPositions", async (req, res) => {
@@ -112,6 +139,7 @@ mongoose
   .then(() => console.log("DB connected"))
   .catch((err) => console.log("DB connection error:", err));
 
+  startPriceSimulator();
 app.listen(PORT, () => {
   console.log("App is running");
 });
