@@ -1,5 +1,4 @@
-import { watchlist } from "../data/data";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tooltip, Grow } from "@mui/material";
 import {
   BarChartOutlined,
@@ -10,7 +9,23 @@ import {
 import { useContext } from "react";
 import GeneralContext from "../context/GeneralContext";
 import api from "../api/axios";
+
 const WatchList = () => {
+  const [watchlist, setWatchlist] = useState([]);
+
+  useEffect(() => {
+    const fetchStocks = () => {
+      api.get("/allStocks").then((res) => {
+        setWatchlist(res.data);
+      });
+    };
+
+    fetchStocks(); // initial load
+    const interval = setInterval(fetchStocks, 10000); // poll every 10s, matches simulator tick
+
+    return () => clearInterval(interval); // cleanup on unmount
+  }, []);
+
   return (
     <div className="watchlist-container">
       <div className="search-container">
@@ -73,7 +88,7 @@ const WatchListActions = ({ uid,price }) => {
   };
 
    const handleSellClick = () => {
-    api.post("http://localhost:3002/newOrder", {
+    api.post("/newOrder", {
       name: uid,
       qty: 1,
       price: price,
