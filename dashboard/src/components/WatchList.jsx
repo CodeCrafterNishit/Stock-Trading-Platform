@@ -9,6 +9,7 @@ import {
 import { useContext } from "react";
 import GeneralContext from "../context/GeneralContext";
 import api from "../api/axios";
+import { DoughnutChart } from "./DoughnutChart";
 
 const WatchList = () => {
   const [watchlist, setWatchlist] = useState([]);
@@ -25,6 +26,28 @@ const WatchList = () => {
 
     return () => clearInterval(interval); // cleanup on unmount
   }, []);
+  const data = {
+    labels: watchlist.map((stock) => stock.name),
+    datasets: [
+      {
+        label: "Price",
+        data: watchlist.map((stock) => stock.price),
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.6)",
+          "rgba(54, 162, 235, 0.6)",
+          "rgba(255, 206, 86, 0.6)",
+          "rgba(75, 192, 192, 0.6)",
+          "rgba(153, 102, 255, 0.6)",
+          "rgba(255, 159, 64, 0.6)",
+          "rgba(199, 199, 199, 0.6)",
+          "rgba(83, 102, 255, 0.6)",
+          "rgba(255, 99, 255, 0.6)",
+        ],
+        borderColor: "#fff",
+        borderWidth: 1,
+      },
+    ],
+  };
 
   return (
     <div className="watchlist-container">
@@ -44,6 +67,7 @@ const WatchList = () => {
           return <WatchListItem stock={stock} key={index} />;
         })}
       </ul>
+      <DoughnutChart data={data} />
     </div>
   );
 };
@@ -75,19 +99,21 @@ const WatchListItem = ({ stock }) => {
           <span className="price">{stock.price}</span>
         </div>
       </div>
-      {showWatchListActions && <WatchListActions uid={stock.name} price={stock.price}/>}
+      {showWatchListActions && (
+        <WatchListActions uid={stock.name} price={stock.price} />
+      )}
     </li>
   );
 };
 
-const WatchListActions = ({ uid,price }) => {
+const WatchListActions = ({ uid, price }) => {
   const generalContext = useContext(GeneralContext);
 
   const handleBuyClick = () => {
     generalContext.openBuyWindow(uid);
   };
 
-   const handleSellClick = () => {
+  const handleSellClick = () => {
     api.post("/newOrder", {
       name: uid,
       qty: 1,
@@ -114,7 +140,9 @@ const WatchListActions = ({ uid,price }) => {
           arrow
           TransitionComponent={Grow}
         >
-          <button className="sell" onClick={handleSellClick}>Sell</button>
+          <button className="sell" onClick={handleSellClick}>
+            Sell
+          </button>
         </Tooltip>
         <Tooltip
           title="Analytics (A)"

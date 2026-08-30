@@ -8,7 +8,7 @@ const Holdings = () => {
   const [allHoldings, setAllHoldings] = useState([]);
 
   useEffect(() => {
-    api.get("http://localhost:3002/allHoldings").then((res) => {
+    api.get("/allHoldings").then((res) => {
       setAllHoldings(res.data);
     });
   }, []);
