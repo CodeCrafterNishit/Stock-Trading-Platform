@@ -239,10 +239,10 @@ code {
   font-weight: 300;
   margin-top: 2%;
 }
-
+/* 
 .row .col:last-child h5 {
   color: rgb(72, 194, 55);
-}
+} */
 
 /* sudo selector */
 .item:hover {
@@ -468,8 +468,12 @@ hr {
   margin-top: 2%;
 }
 
-.row .col:last-child h5 {
+.col h5.profit {
   color: rgb(72, 194, 55);
+}
+
+.col h5.loss {
+  color: rgb(250, 118, 78);
 }
 
 /* sudo selector */
@@ -631,7 +635,6 @@ hr {
 .index:hover {
   cursor: pointer;
 }
-
 .watchlist-container {
   flex-basis: 32%;
   height: 100%;
@@ -639,6 +642,7 @@ hr {
   box-shadow: 0px 0px 4px 1px rgb(236, 235, 235);
   overflow-y: auto;
   position: relative;
+  background-color: #ffffff;
 }
 
 .search-container {
@@ -655,8 +659,13 @@ hr {
   padding: 15px 20px;
   font-size: 0.9rem;
   font-weight: 400;
-  color: rgb(241, 241, 241);
-  border-bottom: 0.8px solid rgb(235, 234, 234);
+  color: rgb(60, 60, 60);
+  background-color: #ffffff;
+  border-bottom: 0.8px solid rgb(230, 230, 230);
+}
+
+.search::placeholder {
+  color: rgb(150, 150, 150);
 }
 
 .counts {
@@ -664,7 +673,7 @@ hr {
   right: 20px;
   font-size: 0.9rem;
   font-weight: 400;
-  color: rgb(177, 177, 177);
+  color: rgb(140, 140, 140);
 }
 
 .list {
@@ -673,9 +682,10 @@ hr {
 }
 
 .list li {
-  border-bottom: 0.8px solid rgb(235, 234, 234);
+  border-bottom: 0.8px solid rgb(230, 230, 230);
   padding: 12px 10px 12px 14px;
   position: relative;
+  background-color: #ffffff;
 }
 
 .item {
@@ -704,7 +714,7 @@ hr {
 }
 
 .item-info span:nth-child(1) {
-  color: rgb(141, 141, 141);
+  color: rgb(110, 110, 110);
   flex: 1;
 }
 
@@ -717,6 +727,11 @@ hr {
 .item-info span:nth-child(3) {
   color: rgb(223, 73, 73);
   flex: 1;
+}
+
+.price {
+  color: rgb(50, 50, 50);
+  font-weight: 500;
 }
 
 .actions {
@@ -795,32 +810,29 @@ hr {
   color: rgb(223, 73, 73);
 }
 
-.down {
-  color: rgb(223, 73, 73);
-}
-
 .up {
   color: rgb(103, 201, 136);
+}
+
+.down {
+  color: rgb(240, 100, 100);
 }
 
 .settings {
   transform: scale(0.8);
   color: rgb(105, 105, 105);
 }
-
 /* sudo selectors */
 .search:focus {
   outline: none;
 }
 
 .list li:hover {
-  cursor: move;
   background-color: #f3f3f3;
 }
 
 .list li:hover > .actions {
   display: flex;
-  cursor: move;
 }
 
 /* TODO */

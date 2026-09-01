@@ -87,7 +87,7 @@ const Holdings = () => {
         </div>
         <div className="col">
           <h5 className={pnl >= 0 ? "profit" : "loss"}>
-            {pnl.toFixed(2)} ({pnl >= 0 ? "+" : ""}
+            {pnl.toFixed(2)} ({pnl >= 0 ? "+" : "-"}
             {pnlPercent.toFixed(2)}%)
           </h5>
           <p>P&L</p>

@@ -11,6 +11,7 @@
   z-index: 100;
   border-radius: var(--radius);
   border: 1px solid rgb(238, 238, 238);
+  cursor: default;
 }
 
 .dragging {
@@ -217,4 +218,55 @@
 .btn-grey:hover {
   background: #9b9b9b;
   color: #fff;
+}
+
+.inputs fieldset input {
+  border: none;
+  margin-right: 8px;
+  max-width: 130px;
+  min-height: 35px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  font-size: 1.1rem;
+  background-color: #fff;
+  color: rgb(51, 51, 51);
+}
+
+.inputs fieldset input:focus {
+  outline: none;
+  background-color: #fff;
+  color: rgb(51, 51, 51);
+}
+
+.inputs fieldset input[readonly] {
+  background-color: #f4f4f4;
+  color: rgb(80, 80, 80);
+  cursor: not-allowed;
+}
+
+.header h3 {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.header h3 span {
+  font-size: 0.6rem;
+  opacity: 0.8;
+  margin-left: 6px;
+}
+
+.market-price {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.85rem;
+  font-weight: 300;
+  margin: 0;
+}
+
+.order-total {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: rgb(65, 132, 243);
+  margin-top: 8px;
 }

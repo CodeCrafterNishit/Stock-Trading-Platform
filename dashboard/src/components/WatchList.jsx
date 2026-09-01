@@ -26,6 +26,7 @@ const WatchList = () => {
 
     return () => clearInterval(interval); // cleanup on unmount
   }, []);
+
   const data = {
     labels: watchlist.map((stock) => stock.name),
     datasets: [
@@ -50,7 +51,7 @@ const WatchList = () => {
   };
 
   return (
-    <div className="watchlist-container">
+    <div className="watchlist-container" >
       <div className="search-container">
         <input
           type="text"
@@ -110,7 +111,7 @@ const WatchListActions = ({ uid, price }) => {
   const generalContext = useContext(GeneralContext);
 
   const handleBuyClick = () => {
-    generalContext.openBuyWindow(uid);
+    generalContext.openBuyWindow(uid,price);
   };
 
   const handleSellClick = () => {
