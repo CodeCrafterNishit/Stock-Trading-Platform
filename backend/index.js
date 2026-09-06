@@ -68,16 +68,33 @@ app.post("/login", async (req, res) => {
   }
 });
 
+// Debug-only route: manually force today's day-open price to reset right now
+app.post("/debug/reset-day", async (req, res) => {
+  const stocks = await StockModel.find();
+  const today = new Date().toISOString().split("T")[0];
+
+  for (const stock of stocks) {
+    stock.dayOpenPrice = stock.price;
+    stock.lastSnapshotDate = today;
+    await stock.save();
+  }
+
+  res.json({ message: "Day reset triggered for all stocks" });
+});
+
 app.get("/allStocks", async (req, res) => {
   const stocks = await StockModel.find();
 
   const enriched = stocks.map((s) => {
     const percentChange = ((s.price - s.previousPrice) / s.previousPrice) * 100;
+    const dayChg = ((s.price - s.dayOpenPrice) / s.dayOpenPrice) * 100;
     return {
       name: s.name,
       price: s.price,
       percent: `${percentChange.toFixed(2)}%`,
       isDown: percentChange < 0,
+      dayChg : dayChg,
+      isDayLoss:dayChg<0,
     };
   });
 
@@ -89,11 +106,20 @@ app.get("/allHoldings", authMiddleware, async (req, res) => {
   const stocks = await StockModel.find();
 
   const priceMap = Object.fromEntries(stocks.map((s) => [s.name, s.price]));
+  const dayOpenMap = Object.fromEntries(stocks.map((s) => [s.name, s.dayOpenPrice]));
 
-  const enrichedHoldings = holdings.map((h) => ({
-    ...h.toObject(),
-    price: priceMap[h.name] ?? h.price, // live price if found, else fallback to original
-  }));
+  const enrichedHoldings = holdings.map((h) => {
+    const livePrice = priceMap[h.name] ?? h.price;
+    const dayOpenPrice = dayOpenMap[h.name] ?? livePrice;
+    const dayChg = ((livePrice - dayOpenPrice) / dayOpenPrice) * 100;
+
+    return {
+      ...h.toObject(),
+      price: livePrice,
+      dayChg: dayChg,
+      isDayLoss: dayChg < 0,
+    };
+  });
 
   res.json(enrichedHoldings);
 });
