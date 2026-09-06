@@ -19,7 +19,7 @@ const Menu = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
-    window.location.href = "http://localhost:5174";
+    window.location.href = "http://localhost:5173";
   };
 
   const menuClass = "menu";

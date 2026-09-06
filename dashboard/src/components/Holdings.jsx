@@ -56,7 +56,7 @@ const Holdings = () => {
             const currVal = stock.price * stock.qty;
             const isProfit = currVal - stock.avg * stock.qty >= 0;
             const profClass = isProfit ? "profit" : "loss";
-            const dayClass = stock.isLoss ? "loss" : "profit";
+            const dayClass = stock.isDayLoss ? "loss" : "profit";
 
             return (
               <tr key={index}>
@@ -68,8 +68,8 @@ const Holdings = () => {
                 <td className={profClass}>
                   {(currVal - stock.avg * stock.qty).toFixed(2)}
                 </td>
-                <td className={profClass}>{stock.net}</td>
-                <td className={dayClass}>{stock.day}</td>
+                <td className={profClass}>{(((stock.price-stock.avg)/stock.avg)*100).toFixed(2)}%</td>
+                  <td className={dayClass}>{stock.dayChg.toFixed(2)}%</td>
               </tr>
             );
           })}
@@ -87,7 +87,7 @@ const Holdings = () => {
         </div>
         <div className="col">
           <h5 className={pnl >= 0 ? "profit" : "loss"}>
-            {pnl.toFixed(2)} ({pnl >= 0 ? "+" : "-"}
+            {pnl.toFixed(2)} ({pnl >= 0 ? "+" : ""}
             {pnlPercent.toFixed(2)}%)
           </h5>
           <p>P&L</p>

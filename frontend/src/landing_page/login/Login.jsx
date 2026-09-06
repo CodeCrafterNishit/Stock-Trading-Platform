@@ -16,7 +16,7 @@ function Login() {
         password,
       });
 
-      window.location.href = `http://localhost:5173?token=${res.data.token}&username=${res.data.username}`;
+      window.location.href = `http://localhost:5174?token=${res.data.token}&username=${res.data.username}`;
     } catch (err) {
       setError(err.response?.data?.error || "Login failed");
     }
