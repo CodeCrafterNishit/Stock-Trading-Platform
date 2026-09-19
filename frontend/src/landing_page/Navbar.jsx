@@ -1,4 +1,5 @@
-import Investo from "../../../frontend/images/investo.png";
+import Investo from "../../images/Investo.png";
+
 import { Link } from "react-router-dom";
 function Navbar() {
   return (

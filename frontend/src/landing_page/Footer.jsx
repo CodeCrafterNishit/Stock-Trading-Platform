@@ -1,6 +1,6 @@
-import Investo from "../../../frontend/images/investo.png";
-import GooglePlay from "../../../frontend/images/googlePlayBadge.svg";
-import AppStore from "../../../frontend/images/appstoreBadge.svg";
+import Investo from "../../images/Investo.png";
+import GooglePlay from "../../images/googlePlayBadge.svg";
+import AppStore from "../../images/appstoreBadge.svg";
 
 
 function Footer() {
