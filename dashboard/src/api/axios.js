@@ -1,4 +1,3 @@
-// dashboard/src/api/axios.js
 import axios from "axios";
 
 const api = axios.create({
@@ -12,5 +11,16 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("token");
+      window.location.href = "http://localhost:5173/login";
+    }
+    return Promise.reject(error);
+  },
+);
 
 export default api;

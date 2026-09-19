@@ -1,17 +1,23 @@
 // import { holdings } from "../data/data";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { VerticalGraph } from "./VerticalGraph";
-
+import GeneralContext from "../context/GeneralContext";
 import api from "../api/axios";
 
 const Holdings = () => {
   const [allHoldings, setAllHoldings] = useState([]);
+  const generalContext = useContext(GeneralContext);
 
-  useEffect(() => {
+  const fetchHoldings = useCallback(() => {
     api.get("/allHoldings").then((res) => {
       setAllHoldings(res.data);
     });
   }, []);
+
+  useEffect(() => {
+    fetchHoldings();
+    generalContext.registerHoldingsRefresh(fetchHoldings);
+  }, [fetchHoldings, generalContext]);
 
   const chartData = {
     labels: allHoldings.map((stock) => stock["name"]),
@@ -41,38 +47,59 @@ const Holdings = () => {
       <h3 className="title">Holdings ({allHoldings.length})</h3>
       <div className="order-table">
         <table>
-          <tr>
-            <th>Instrument</th>
-            <th>Qty.</th>
-            <th>Avg. cost</th>
-            <th>LTP</th>
-            <th>Cur. val</th>
-            <th>P&L</th>
-            <th>Net chg.</th>
-            <th>Day chg.</th>
-          </tr>
-
-          {allHoldings.map((stock, index) => {
-            const currVal = stock.price * stock.qty;
-            const isProfit = currVal - stock.avg * stock.qty >= 0;
-            const profClass = isProfit ? "profit" : "loss";
-            const dayClass = stock.isDayLoss ? "loss" : "profit";
-
-            return (
-              <tr key={index}>
-                <td>{stock.name}</td>
-                <td>{stock.qty}</td>
-                <td>{stock.avg.toFixed(2)}</td>
-                <td>{stock.price.toFixed(2)}</td>
-                <td>{currVal.toFixed(2)}</td>
-                <td className={profClass}>
-                  {(currVal - stock.avg * stock.qty).toFixed(2)}
-                </td>
-                <td className={profClass}>{(((stock.price-stock.avg)/stock.avg)*100).toFixed(2)}%</td>
+          <thead>
+            <tr>
+              <th>Instrument</th>
+              <th>Qty.</th>
+              <th>Avg. cost</th>
+              <th>LTP</th>
+              <th>Cur. val</th>
+              <th>P&L</th>
+              <th>Net chg.</th>
+              <th>Day chg.</th>
+            </tr>
+          </thead>
+          <tbody>
+            {allHoldings.map((stock, index) => {
+              const currVal = stock.price * stock.qty;
+              const isProfit = currVal - stock.avg * stock.qty >= 0;
+              const profClass = isProfit ? "profit" : "loss";
+              const dayClass = stock.isDayLoss ? "loss" : "profit";
+              return (
+                <tr key={index}>
+                  <td>{stock.name}</td>
+                  <td>{stock.qty}</td>
+                  <td>{stock.avg.toFixed(2)}</td>
+                  <td>{stock.price.toFixed(2)}</td>
+                  <td>{currVal.toFixed(2)}</td>
+                  <td className={profClass}>
+                    {(currVal - stock.avg * stock.qty).toFixed(2)}
+                  </td>
+                  <td className={profClass}>
+                    {(((stock.price - stock.avg) / stock.avg) * 100).toFixed(2)}
+                    %
+                  </td>
                   <td className={dayClass}>{stock.dayChg.toFixed(2)}%</td>
-              </tr>
-            );
-          })}
+                  <td>
+                    <button
+                      className="btn btn-sell"
+                      onClick={() => {
+                      console.log("generalContext value:", generalContext);
+                        console.log("Sell button clicked", stock.name);
+                        generalContext.openSellWindow(
+                          stock.name,
+                          stock.qty,
+                          stock.avg,
+                        );
+                      }}
+                    >
+                      Sell
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
         </table>
       </div>
 

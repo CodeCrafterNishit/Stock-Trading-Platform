@@ -14,7 +14,7 @@ const { HoldingsModel } = require("./model/HoldingsModel");
 const { PositionsModel } = require("./model/PositionsModel");
 const { OrdersModel } = require("./model/OrdersModel");
 const { UserModel } = require("./model/UserModel");
-const {StockModel} = require("./model/StockModel");
+const { StockModel } = require("./model/StockModel");
 const authMiddleware = require("./middleware/authMiddleware");
 const startPriceSimulator = require("../backend/services/PriceSimulator");
 
@@ -69,7 +69,7 @@ app.post("/login", async (req, res) => {
 });
 
 // Debug-only route: manually force today's day-open price to reset right now
-app.post("/debug/reset-day", async (req, res) => {
+app.post("/debug/reset-day", authMiddleware, async (req, res) => {
   const stocks = await StockModel.find();
   const today = new Date().toISOString().split("T")[0];
 
@@ -93,8 +93,8 @@ app.get("/allStocks", async (req, res) => {
       price: s.price,
       percent: `${percentChange.toFixed(2)}%`,
       isDown: percentChange < 0,
-      dayChg : dayChg,
-      isDayLoss:dayChg<0,
+      dayChg: dayChg,
+      isDayLoss: dayChg < 0,
     };
   });
 
@@ -106,7 +106,9 @@ app.get("/allHoldings", authMiddleware, async (req, res) => {
   const stocks = await StockModel.find();
 
   const priceMap = Object.fromEntries(stocks.map((s) => [s.name, s.price]));
-  const dayOpenMap = Object.fromEntries(stocks.map((s) => [s.name, s.dayOpenPrice]));
+  const dayOpenMap = Object.fromEntries(
+    stocks.map((s) => [s.name, s.dayOpenPrice]),
+  );
 
   const enrichedHoldings = holdings.map((h) => {
     const livePrice = priceMap[h.name] ?? h.price;
@@ -128,35 +130,119 @@ app.get("/allPositions", async (req, res) => {
   let allPositions = await PositionsModel.find({});
   res.json(allPositions);
 });
+app.post("/newOrder", authMiddleware, async (req, res) => {
+  try {
+    const { name, qty, mode } = req.body;
 
-app.post("/newOrder",authMiddleware, async (req, res) => {
-  const newOrder = new OrdersModel({
-    user: req.userId,
-    name: req.body.name,
-    qty: req.body.qty,
-    price: req.body.price,
-    mode: req.body.mode,
-  });
-  await newOrder.save();
+    if (!qty || qty <= 0) {
+      return res.status(400).json({ error: "Invalid quantity" });
+    }
 
-  if (req.body.mode === "BUY") {
-    const newHolding = new HoldingsModel({
+    const stock = await StockModel.findOne({ name });
+    if (!stock) {
+      return res.status(400).json({ error: "Invalid stock" });
+    }
+    const price = stock.price; // server-trusted, not from req.body
+
+    const newOrder = new OrdersModel({
       user: req.userId,
-      name: req.body.name,
-      qty: req.body.qty,
-      avg: req.body.price,
-      price: req.body.price,
-      net: "0%",
-      day: "0%",
+      name,
+      qty,
+      price,
+      mode,
     });
-    await newHolding.save();
-  }
+    await newOrder.save();
 
-  res.send("Order Saved");
+    if (mode === "BUY") {
+      const existingHolding = await HoldingsModel.findOne({
+        user: req.userId,
+        name,
+      });
+      if (existingHolding) {
+        const newQty = existingHolding.qty + qty;
+        const newAvg =
+          (existingHolding.qty * existingHolding.avg + qty * price) / newQty;
+
+        existingHolding.qty = newQty;
+        existingHolding.avg = newAvg;
+        await existingHolding.save();
+      } else {
+        const newHolding = new HoldingsModel({
+          user: req.userId,
+          name,
+          qty,
+          avg: price,
+          price,
+          net: "0%",
+          day: "0%",
+        });
+        await newHolding.save();
+      }
+    }
+    res.send("Order Saved");
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Order failed" });
+  }
+});
+
+app.post("/sellOrder", authMiddleware, async (req, res) => {
+  try {
+    const { name, qty } = req.body;
+    const sellQty = qty;
+
+    if (!sellQty || sellQty <= 0) {
+      return res.status(400).json({ error: "Invalid quantity" });
+    }
+
+    const stock = await StockModel.findOne({ name });
+    if (!stock) {
+      return res.status(400).json({ error: "Invalid stock" });
+    }
+    const price = stock.price;
+
+    const holding = await HoldingsModel.findOne({
+      user: req.userId,
+      name,
+    });
+
+    if (!holding) {
+      return res.status(400).json({ error: "You don't own this stock" });
+    }
+
+    if (sellQty > holding.qty) {
+      return res
+        .status(400)
+        .json({ error: "Sell quantity exceeds holding quantity" });
+    }
+
+    if (sellQty === holding.qty) {
+      await HoldingsModel.deleteOne({ _id: holding._id });
+    } else {
+      holding.qty -= sellQty;
+      await holding.save();
+    }
+
+    const sellOrder = new OrdersModel({
+      user: req.userId,
+      name,
+      qty: sellQty,
+      price,
+      mode: "SELL",
+    });
+    await sellOrder.save();
+
+    res.send("Sell processed");
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Sell order failed" });
+  }
 });
 
 app.get("/allOrders", authMiddleware, async (req, res) => {
-  let allOrders = await OrdersModel.find({ user: req.userId });
+  let allOrders = await OrdersModel.find({ user: req.userId }).sort({
+    _id: -1,
+  });
   res.json(allOrders);
 });
 
@@ -165,7 +251,7 @@ mongoose
   .then(() => console.log("DB connected"))
   .catch((err) => console.log("DB connection error:", err));
 
-  startPriceSimulator();
+startPriceSimulator();
 app.listen(PORT, () => {
   console.log("App is running");
 });

@@ -1,56 +1,71 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
 
 import GeneralContext from "../context/GeneralContext";
 import "./BuyActionWindow.css";
 
-const BuyActionWindow = ({ uid, price }) => {
+const SellActionWindow = ({ uid, qty: ownedQty, avg }) => {
   const generalContext = useContext(GeneralContext);
   const [stockQuantity, setStockQuantity] = useState(1);
+  const [livePrice, setLivePrice] = useState(0);
   const [error, setError] = useState("");
 
-  const totalCost = (stockQuantity * price).toFixed(2);
+  useEffect(() => {
+    api.get("/allStocks").then((res) => {
+      const stock = res.data.find((s) => s.name === uid);
+      if (stock) {
+        setLivePrice(stock.price);
+      }
+    });
+  }, [uid]);
 
-  const handleBuyClick = () => {
+  const totalValue = (stockQuantity * livePrice).toFixed(2);
+
+  const handleSellClick = () => {
+    if (stockQuantity > ownedQty) {
+      setError(`You own only ${ownedQty} shares`);
+      return;
+    }
     api
-      .post("/newOrder", {
+      .post("/sellOrder", {
         name: uid,
         qty: stockQuantity,
-        price: price,
-        mode: "BUY",
       })
       .then(() => {
         generalContext.refreshHoldings();
-        generalContext.closeBuyWindow();
+        generalContext.closeSellWindow();
       })
       .catch((err) => {
-        setError(err.response?.data?.error || "Buy failed");
+        setError(err.response?.data?.error || "Sell failed");
       });
   };
 
   const handleCancelClick = () => {
-    generalContext.closeBuyWindow();
+    generalContext.closeSellWindow();
   };
 
   return (
-    <div className="container" id="buy-window">
+    <div className="container" id="sell-window">
       <div className="header">
         <h3>
-          Buy {uid} <span>NSE</span>
+          Sell {uid} <span>NSE</span>
         </h3>
-        <p className="market-price">Market Price: ₹{Number(price).toFixed(2)}</p>
+        <p className="market-price">
+          Market Price: ₹{Number(livePrice).toFixed(2)}
+        </p>
       </div>
 
       <div className="regular-order">
         <div className="inputs">
           <fieldset>
-            <legend>Qty.</legend>
+            <legend>Qty. (max {ownedQty})</legend>
             <input
               type="number"
               name="qty"
               id="qty"
               min="1"
+              max={ownedQty}
               onChange={(e) => setStockQuantity(Number(e.target.value))}
               value={stockQuantity}
             />
@@ -61,22 +76,23 @@ const BuyActionWindow = ({ uid, price }) => {
               type="number"
               name="price"
               id="price"
-              value={price}
+              value={livePrice}
               readOnly
             />
           </fieldset>
         </div>
         <p className="order-total">
-          Total: ₹{totalCost}
+          Avg. cost: ₹{Number(avg).toFixed(2)} &nbsp;|&nbsp; Total: ₹
+          {totalValue}
         </p>
         {error && <p style={{ color: "red", fontSize: "0.8rem" }}>{error}</p>}
       </div>
 
       <div className="buttons">
-        <span>Margin required ₹{totalCost}</span>
+        <span>You'll receive ₹{totalValue}</span>
         <div>
-          <Link to="" className="btn btn-blue" onClick={handleBuyClick}>
-            Buy
+          <Link to="" className="btn btn-blue" onClick={handleSellClick}>
+            Sell
           </Link>
           <Link to="" className="btn btn-grey" onClick={handleCancelClick}>
             Cancel
@@ -87,4 +103,4 @@ const BuyActionWindow = ({ uid, price }) => {
   );
 };
 
-export default BuyActionWindow;
+export default SellActionWindow;

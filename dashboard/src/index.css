@@ -42,23 +42,6 @@ code {
   margin-right: 8px;
 }
 
-.btn {
-  text-decoration: none;
-  padding: 10px 20px;
-  border-radius: 2px;
-  color: #fff;
-  margin-right: 2px;
-  margin-left: 2px;
-}
-
-.btn-green {
-  background: #4caf50;
-}
-
-.btn-blue {
-  background: #4184f3;
-}
-
 .row {
   width: 100%;
   display: flex;
@@ -136,15 +119,6 @@ code {
 .commodity p {
   margin-bottom: 10%;
   color: #c9c9c9;
-}
-
-/* sudo selectors */
-.btn-blue:hover {
-  background: #74a7fa;
-}
-
-.btn-green:hover {
-  background: #7bdd7f;
 }
 
 .title {
@@ -362,19 +336,6 @@ hr {
   color: rgb(173, 173, 173);
   font-size: 1rem;
   font-weight: 300;
-}
-
-.btn {
-  text-decoration: none;
-  background: rgb(77, 77, 248);
-  padding: 10px 20px;
-  border-radius: 2px;
-  color: #fff;
-  margin-top: 2%;
-}
-
-.btn:hover {
-  background: rgb(110, 110, 253);
 }
 
 .title {
@@ -754,22 +715,6 @@ hr {
   cursor: pointer;
 }
 
-.buy {
-  background-color: #4184f3;
-  color: #fff;
-  font-weight: 400;
-  font-size: 0.8rem;
-  border: 0.7px solid #4184f3;
-}
-
-.sell {
-  background-color: #ff5722;
-  color: #fff;
-  font-weight: 400;
-  font-size: 0.8rem;
-  border: 0.7px solid #ff5722;
-}
-
 .action {
   background-color: #fff;
   border: 0.7px solid #9b9b9b;
@@ -945,4 +890,103 @@ hr {
 
 .dropdown-logout:hover {
   background: #fdf1ef;
+}
+
+/* Shared button typography baseline — applies to all action buttons */
+.buy,
+.sell,
+.btn,
+.btn-blue,
+.btn-green,
+.btn-grey {
+  font-family: inherit;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition:
+    background-color 0.15s ease,
+    transform 0.1s ease;
+}
+
+/* Buy button — WatchList hover actions */
+.buy {
+  background-color: #3b6fd1;
+  color: #fff;
+  font-size: 0.78rem;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 8px;
+}
+
+.buy:hover {
+  background-color: #4f80dc;
+}
+
+.buy:active {
+  transform: scale(0.97);
+}
+
+/* Sell button — WatchList hover actions (kept for consistency, currently unused) */
+.sell {
+  background-color: #e74247;
+  color: #fff;
+  font-size: 0.78rem;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+}
+
+.sell:hover {
+  background-color: #f13f3f;
+}
+
+.sell:active {
+  transform: scale(0.97);
+}
+
+/* Sell button — Holdings table row action */
+.btn-sell {
+  background-color: #eb5b3c;
+  color: #fff;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.01em;
+  border: none;
+  border-radius: 10px;
+  padding: 6px 16px;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    transform 0.1s ease;
+}
+
+.btn-sell:hover {
+  background-color: #e55640;
+}
+
+.btn-sell:active {
+  transform: scale(0.97);
+}
+
+.btn-sell:focus-visible {
+  outline: 2px solid #e33f3f;
+  outline-offset: 2px;
+}
+
+/* Primary blue button — Buy window confirm, general CTAs */
+.btn-blue {
+  background: #3b6fd1;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.btn-blue:hover {
+  background: #4f80dc;
+}
+
+/* Optional but recommended: tabular numbers for price/qty columns */
+.order-table td,
+.price,
+.item-info span {
+  font-variant-numeric: tabular-nums;
 }

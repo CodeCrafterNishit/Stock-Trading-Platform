@@ -111,17 +111,10 @@ const WatchListActions = ({ uid, price }) => {
   const generalContext = useContext(GeneralContext);
 
   const handleBuyClick = () => {
+    
     generalContext.openBuyWindow(uid,price);
   };
 
-  const handleSellClick = () => {
-    api.post("/newOrder", {
-      name: uid,
-      qty: 1,
-      price: price,
-      mode: "SELL",
-    });
-  };
   return (
     <span className="actions">
       <span>
@@ -133,36 +126,6 @@ const WatchListActions = ({ uid, price }) => {
         >
           <button className="buy" onClick={handleBuyClick}>
             Buy
-          </button>
-        </Tooltip>
-        <Tooltip
-          title="Sell (S)"
-          placement="top"
-          arrow
-          TransitionComponent={Grow}
-        >
-          <button className="sell" onClick={handleSellClick}>
-            Sell
-          </button>
-        </Tooltip>
-        <Tooltip
-          title="Analytics (A)"
-          placement="top"
-          arrow
-          TransitionComponent={Grow}
-        >
-          <button className="action">
-            <BarChartOutlined className="icon" />
-          </button>
-        </Tooltip>
-        <Tooltip
-          title="More (M)"
-          placement="top"
-          arrow
-          TransitionComponent={Grow}
-        >
-          <button className="action">
-            <MoreHoriz className="icon" />
           </button>
         </Tooltip>
       </span>
