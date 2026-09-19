@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../../api/axios";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -11,12 +11,13 @@ function Login() {
     setError("");
 
     try {
-      const res = await axios.post("http://localhost:3002/login", {
+      const res = await api.post("/login", {
         username,
         password,
       });
 
-      window.location.href = `http://localhost:5174?token=${res.data.token}&username=${res.data.username}`;
+      const dashboardUrl = import.meta.env.VITE_DASHBOARD_URL || "http://localhost:5174";
+      window.location.href = `${dashboardUrl}?token=${res.data.token}&username=${res.data.username}`;
     } catch (err) {
       setError(err.response?.data?.error || "Login failed");
     }

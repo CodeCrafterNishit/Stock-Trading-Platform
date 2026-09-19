@@ -1,26 +1,27 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../../api/axios";
 
 function Signup() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
 
-  try {
-    const res = await axios.post("http://localhost:3002/signup", {
-      username,
-      password,
-    });
+    try {
+      const res = await api.post("/signup", {
+        username,
+        password,
+      });
 
-    window.location.href = `http://localhost:5173?token=${res.data.token}&username=${res.data.username}`;
-  } catch (err) {
-    setError(err.response?.data?.error || "Signup failed");
-  }
-};
+      const dashboardUrl = import.meta.env.VITE_DASHBOARD_URL || "http://localhost:5174";
+      window.location.href = `${dashboardUrl}?token=${res.data.token}&username=${res.data.username}`;
+    } catch (err) {
+      setError(err.response?.data?.error || "Signup failed");
+    }
+  };
 
   return (
     <div className="container py-5">

@@ -5,7 +5,7 @@ const Orders = () => {
   const [allOrders, setAllOrders] = useState([]);
 
   useEffect(() => {
-    api.get("http://localhost:3002/allOrders").then((res) => {
+    api.get("/allOrders").then((res) => {
       setAllOrders(res.data);
     });
   }, []);
@@ -19,23 +19,27 @@ const Orders = () => {
       ) : (
         <div className="order-table">
           <table>
-            <tr>
-              <th>Instrument</th>
-              <th>Qty.</th>
-              <th>Price</th>
-              <th>Mode</th>
-            </tr>
-            {allOrders.map((order, index) => {
-              const modeClass = order.mode === "BUY" ? "profit" : "loss";
-              return (
-                <tr key={index}>
-                  <td>{order.name}</td>
-                  <td>{order.qty}</td>
-                  <td>{order.price.toFixed(2)}</td>
-                  <td className={modeClass}>{order.mode}</td>
-                </tr>
-              );
-            })}
+            <thead>
+              <tr>
+                <th>Instrument</th>
+                <th>Qty.</th>
+                <th>Price</th>
+                <th>Mode</th>
+              </tr>
+            </thead>
+            <tbody>
+              {allOrders.map((order, index) => {
+                const modeClass = order.mode === "BUY" ? "profit" : "loss";
+                return (
+                  <tr key={index}>
+                    <td>{order.name}</td>
+                    <td>{order.qty}</td>
+                    <td>{order.price.toFixed(2)}</td>
+                    <td className={modeClass}>{order.mode}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
           </table>
         </div>
       )}

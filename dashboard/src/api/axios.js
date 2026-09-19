@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:3002",
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3002",
 });
 
 api.interceptors.request.use((config) => {
@@ -17,10 +17,10 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
-      window.location.href = "http://localhost:5173/login";
+      window.location.href = `${import.meta.env.VITE_FRONTEND_URL || "http://localhost:5173"}/login`;
     }
     return Promise.reject(error);
-  },
+  }
 );
 
 export default api;
